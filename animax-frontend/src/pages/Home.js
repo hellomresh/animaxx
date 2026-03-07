@@ -151,7 +151,7 @@ function Home() {
 
     <div className="container">
 
-      <h1>--Animaxx--</h1>
+      <h1>Animax • Anime Discovery Platform</h1>
 
 
       {/* HERO */}
@@ -338,21 +338,24 @@ function Home() {
             className="card"
             key={a._id}
           >
-
             <div className="poster-wrapper">
 
-              <img
-                src={a.poster}
-                alt={a.title}
-              />
+                    <img
+                      src={a.poster}
+                      alt={a.title}
+                    />
 
-              {a.trailer && (
-                <div className="play-overlay">
-                  ▶ Trailer
-                </div>
-              )}
+                    <span className="rating">
+                      ⭐ {a.score || "N/A"}
+                    </span>
 
-            </div>
+                    {a.trailer && (
+                      <div className="play-overlay">
+                        ▶ Trailer
+                      </div>
+                    )}
+
+                  </div>
 
             <h3>{a.title}</h3>
 
