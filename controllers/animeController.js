@@ -9,7 +9,15 @@ exports.getAnime = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = 25;
 
-    const anime = await Anime.find()
+    const genre = req.query.genre;
+
+    let query = {};
+
+    if (genre) {
+      query.genre = { $regex: genre, $options: "i" };
+    }
+
+    const anime = await Anime.find(query)
       .skip((page - 1) * limit)
       .limit(limit);
 
@@ -19,7 +27,6 @@ exports.getAnime = async (req, res) => {
     res.status(500).json({ message: "Error fetching anime" });
   }
 };
-
 
 // ADD anime manually
 exports.addAnime = async (req, res) => {
@@ -139,25 +146,6 @@ exports.getTrendingAnime = async (req, res) => {
 
   } catch (error) {
     res.status(500).json({ message: "Trending fetch failed" });
-  }
-
-};
-exports.getTrendingLive = async (req, res) => {
-
-  try {
-
-    const response = await axios.get(
-      "https://api.jikan.moe/v4/seasons/now"
-    );
-
-    res.json(response.data.data);
-
-  } catch (error) {
-
-    res.status(500).json({
-      message: "Error fetching trending anime"
-    });
-
   }
 
 };

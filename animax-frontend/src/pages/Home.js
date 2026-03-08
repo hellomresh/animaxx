@@ -12,6 +12,8 @@ function Home() {
   const [trending, setTrending] = useState([]);
   const [topAnime, setTopAnime] = useState([]);
   const [featured, setFeatured] = useState(null);
+  const [genre, setGenre] = useState("");
+  const [loadingGenre, setLoadingGenre] = useState(false);
 
   const loader = useRef(null);
   const trendingRef = useRef(null);
@@ -74,14 +76,21 @@ function Home() {
       try {
 
         const res = await axios.get(
-          `http://localhost:3001/api/anime?page=${page}`
+          `http://localhost:3001/api/anime?page=${page}${genre ? `&genre=${genre}` : ""}`
         );
-
         if (res.data.length === 0) {
           setHasMore(false);
         } else {
-          setAnime(prev => [...prev, ...res.data]);
+
+          if (page === 1) {
+            setAnime(res.data);   // replace list when genre changes
+          } else {
+            setAnime(prev => [...prev, ...res.data]); // infinite scroll
+          }
+
         }
+
+        setLoadingGenre(false);
 
       } catch (error) {
         console.log("Error fetching anime");
@@ -93,7 +102,19 @@ function Home() {
       fetchAnime();
     }
 
-  }, [page, search]);
+  }, [page, search, genre]);
+
+
+  /* RESET WHEN GENRE CHANGES */
+
+  useEffect(() => {
+
+    setLoadingGenre(true);
+    setAnime([]);
+    setPage(1);
+    setHasMore(true);
+
+  }, [genre]);
 
 
   /* INFINITE SCROLL */
@@ -161,6 +182,7 @@ function Home() {
         <div className="hero">
 
           <img
+            loading="lazy"
             className="hero-bg"
             src={featured.poster}
             alt={featured.title}
@@ -188,15 +210,19 @@ function Home() {
       )}
 
 
-      {/* SEARCH */}
+      {/* SEARCH BAR */}
 
-      <input
-        type="text"
-        placeholder="Search anime..."
-        value={search}
-        onChange={handleSearch}
-        className="search"
-      />
+      <div className="search-bar">
+
+        <input
+          type="text"
+          placeholder="Search anime..."
+          value={search}
+          onChange={handleSearch}
+          className="search"
+        />
+
+      </div>
 
 
       {/* TRENDING */}
@@ -231,6 +257,7 @@ function Home() {
                 >
 
                   <img
+                    loading="lazy"
                     draggable="false"
                     src={a.poster}
                     alt={a.title}
@@ -294,6 +321,7 @@ function Home() {
                 >
 
                   <img
+                    loading="lazy"
                     draggable="false"
                     src={a.poster}
                     alt={a.title}
@@ -325,48 +353,88 @@ function Home() {
       )}
 
 
-      {/* ALL ANIME GRID */}
+      {/* GENRE BUTTONS */}
 
-      <h2 className="section-title">All Anime</h2>
+      <div className="genre-buttons">
 
-      <div className="grid">
-
-        {anime.map(a => (
-
-          <Link
-            to={`/anime/${a._id}`}
-            className="card"
-            key={a._id}
-          >
-            <div className="poster-wrapper">
-
-                    <img
-                      src={a.poster}
-                      alt={a.title}
-                    />
-
-                    <span className="rating">
-                      ⭐ {a.score || "N/A"}
-                    </span>
-
-                    {a.trailer && (
-                      <div className="play-overlay">
-                        ▶ Trailer
-                      </div>
-                    )}
-
-                  </div>
-
-            <h3>{a.title}</h3>
-
-            <p><b>Episodes:</b> {a.episodes}</p>
-            <p><b>Genre:</b> {a.genre}</p>
-
-          </Link>
-
-        ))}
+        <button className={genre === "" ? "active-genre" : ""} onClick={() => setGenre("")}>All</button>
+        <button className={genre === "Action" ? "active-genre" : ""} onClick={() => setGenre("Action")}>Action</button>
+        <button className={genre === "Adventure" ? "active-genre" : ""} onClick={() => setGenre("Adventure")}>Adventure</button>
+        <button className={genre === "Comedy" ? "active-genre" : ""} onClick={() => setGenre("Comedy")}>Comedy</button>
+        <button className={genre === "Fantasy" ? "active-genre" : ""} onClick={() => setGenre("Fantasy")}>Fantasy</button>
+        <button className={genre === "Romance" ? "active-genre" : ""} onClick={() => setGenre("Romance")}>Romance</button>
+        <button className={genre === "Sci-Fi" ? "active-genre" : ""} onClick={() => setGenre("Sci-Fi")}>Sci-Fi</button>
 
       </div>
+
+
+      {/* ALL ANIME GRID */}
+
+      <h2 className="section-title">
+        {genre ? `${genre} Anime` : "All Anime"}
+      </h2>
+
+
+      {loadingGenre ? (
+
+        <div className="grid">
+
+          {Array.from({ length: 12 }).map((_, i) => (
+
+            <div className="card skeleton-card" key={i}>
+              <div className="skeleton-poster"></div>
+              <div className="skeleton-text"></div>
+              <div className="skeleton-text small"></div>
+            </div>
+
+          ))}
+
+        </div>
+
+      ) : (
+
+        <div className="grid">
+
+          {anime.map(a => (
+
+            <Link
+              to={`/anime/${a._id}`}
+              className="card"
+              key={a._id}
+            >
+
+              <div className="poster-wrapper">
+
+                <img
+                  loading="lazy"
+                  src={a.poster}
+                  alt={a.title}
+                />
+
+                <span className="rating">
+                  ⭐ {a.score || "N/A"}
+                </span>
+
+                {a.trailer && (
+                  <div className="play-overlay">
+                    ▶ Trailer
+                  </div>
+                )}
+
+              </div>
+
+              <h3>{a.title}</h3>
+
+              <p><b>Episodes:</b> {a.episodes}</p>
+              <p><b>Genre:</b> {a.genre}</p>
+
+            </Link>
+
+          ))}
+
+        </div>
+
+      )}
 
 
       {search === "" && (

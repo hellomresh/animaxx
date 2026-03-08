@@ -1,3 +1,7 @@
+html{
+  scroll-padding-top:80px;
+}
+
 body{
   margin:0;
   font-family: Arial, Helvetica, sans-serif;
@@ -49,24 +53,13 @@ h1{
   color:#94a3b8;
 }
 
-/* GENRE FILTER */
-
-.genre-filter{
-  margin:10px 0 20px 0;
-  padding:10px 14px;
-  border-radius:8px;
-  border:none;
-  background:#1e293b;
-  color:white;
-  font-size:14px;
-}
-
 /* GRID LAYOUT */
 
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
   gap:25px;
+  transition:opacity 0.3s ease;
 }
 
 /* CARD */
@@ -77,7 +70,7 @@ h1{
   overflow:hidden;
   text-decoration:none;
   color:white;
-  transition:transform 0.3s ease, box-shadow 0.3s ease;
+  transition:all 0.3s ease;
 }
 
 .card:hover{
@@ -323,4 +316,64 @@ h1{
 
 .back-btn:hover{
   background:#1e40af;
+}
+
+/* GENRE BUTTONS */
+
+.genre-buttons{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin:40px 0 20px 0;
+}
+
+.genre-buttons button{
+  padding:8px 16px;
+  border:none;
+  border-radius:20px;
+  background:#1e293b;
+  color:white;
+  cursor:pointer;
+  transition:all 0.25s ease;
+}
+
+.genre-buttons button:hover{
+  background:#2563eb;
+  transform:translateY(-2px);
+}
+
+.active-genre{
+  background:#2563eb !important;
+  box-shadow:0 0 10px rgba(37,99,235,0.6);
+}
+
+/* SKELETON LOADING */
+
+.skeleton-card{
+  background:#1e293b;
+  border-radius:12px;
+  overflow:hidden;
+  animation:pulse 1.5s infinite;
+}
+
+.skeleton-poster{
+  height:320px;
+  background:#334155;
+}
+
+.skeleton-text{
+  height:18px;
+  background:#334155;
+  margin:10px;
+  border-radius:6px;
+}
+
+.skeleton-text.small{
+  width:60%;
+}
+
+@keyframes pulse{
+  0%{opacity:0.6}
+  50%{opacity:1}
+  100%{opacity:0.6}
 }
