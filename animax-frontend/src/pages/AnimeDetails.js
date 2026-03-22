@@ -7,24 +7,38 @@ function AnimeDetails() {
 
   const { id } = useParams();
   const [anime, setAnime] = useState(null);
+  const [recommendations, setRecommendations] = useState([]);
 
   useEffect(() => {
 
     const fetchAnime = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:3001/api/anime/${id}`
+        );
+        setAnime(res.data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
 
-      const res = await axios.get(
-        `http://localhost:3001/api/anime/${id}`
-      );
-
-      setAnime(res.data);
-
+    const fetchRecommendations = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:3001/api/anime/recommend/${id}`
+        );
+        setRecommendations(res.data);
+      } catch (err) {
+        console.error(err);
+      }
     };
 
     fetchAnime();
+    fetchRecommendations();
 
   }, [id]);
 
-  if (!anime) return <h2 style={{textAlign:"center"}}>Loading...</h2>;
+  if (!anime) return <h2 style={{ textAlign: "center" }}>Loading...</h2>;
 
   return (
 
@@ -34,7 +48,7 @@ function AnimeDetails() {
       <div
         className="hero"
         style={{
-          backgroundImage:`url(${anime.poster})`
+          backgroundImage: `url(${anime.poster})`
         }}
       >
 
@@ -55,11 +69,8 @@ function AnimeDetails() {
       <div className="details-container">
 
         <div className="details-poster">
-
           <img src={anime.poster} alt={anime.title} />
-
         </div>
-
 
         <div className="details-info">
 
@@ -86,14 +97,50 @@ function AnimeDetails() {
           <h2>Trailer</h2>
 
           <iframe
-             width="100%"
+            width="100%"
             height="450"
             src={anime.trailer?.replace("youtube.com", "youtube-nocookie.com")}
-             title="Anime Trailer"
+            title="Anime Trailer"
             frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
-    ></iframe>
+          ></iframe>
+
+        </div>
+
+      )}
+
+
+      {/* RECOMMENDATIONS */}
+      {recommendations.length > 0 && (
+
+        <div className="recommendations-section">
+
+          <h2>Recommended Anime</h2>
+
+          <div className="recommendations">
+
+            {recommendations.map((rec) => (
+
+              <Link to={`/anime/${rec._id}`} key={rec._id}>
+
+                <div className="anime-card">
+
+                  {/*  Safe Image Fallback */}
+                  <img 
+                    src={rec.poster || "/placeholder.jpg"} 
+                    alt={rec.title} 
+                  />
+
+                  <p>{rec.title}</p>
+
+                </div>
+
+              </Link>
+
+            ))}
+
+          </div>
 
         </div>
 

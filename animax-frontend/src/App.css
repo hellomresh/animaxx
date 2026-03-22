@@ -377,3 +377,67 @@ h1{
   50%{opacity:1}
   100%{opacity:0.6}
 }
+/* 🔥 RECOMMENDATIONS (NETFLIX STYLE) */
+
+.recommendations-section {
+  padding: 40px;
+}
+
+.recommendations-section h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+/* Row Layout (same feel as .row but cleaner) */
+.recommendations {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 10px;
+  scroll-behavior: smooth;
+}
+
+/* Hide scrollbar (clean look) */
+.recommendations::-webkit-scrollbar {
+  display: none;
+}
+
+/* Card */
+.anime-card {
+  min-width: 180px;
+  background: #1e293b;
+  border-radius: 12px;
+  overflow: hidden;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Hover effect (Netflix style zoom) */
+.anime-card:hover {
+  transform: scale(1.1);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
+}
+
+/* Image */
+.anime-card img {
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Title */
+.anime-card p {
+  padding: 10px;
+  font-size: 14px;
+  text-align: center;
+  color: #e2e8f0;
+}
+
+/* Optional: subtle glow on hover */
+.anime-card:hover p {
+  color: #ffffff;
+}

@@ -10,7 +10,8 @@ const {
   importAnime,
   searchAnime,
   getTrendingAnime,
-  getTopAnime
+  getTopAnime,
+  getRecommendations
 } = require("../controllers/animeController");
 
 router.get("/", getAnime);
@@ -21,6 +22,7 @@ router.get("/import", importAnime);
 router.get("/trending", getTrendingAnime);
 router.get("/top", getTopAnime);
 router.get("/search", searchAnime);
+router.get("/recommend/:id", getRecommendations);
 
 router.get("/:id", getAnimeById);
 router.delete("/:id", deleteAnime);

@@ -164,3 +164,35 @@ exports.getTopAnime = async (req, res) => {
   }
 
 };
+const getRecommendations = async (req, res) => {
+  try {
+    const animeId = req.params.id;
+
+    const currentAnime = await Anime.findById(animeId);
+
+    if (!currentAnime) {
+      return res.status(404).json({ message: "Anime not found" });
+    }
+
+    // ✅ SAFE CHECK
+    if (!currentAnime.genre) {
+      return res.json([]);
+    }
+
+    const genres = currentAnime.genre.split(",");
+
+    const recommendations = await Anime.find({
+      _id: { $ne: animeId },
+      genre: {
+        $in: genres.map(g => new RegExp(g.trim(), "i"))
+      }
+    }).limit(10);
+
+    res.json(recommendations);
+
+  } catch (error) {
+    console.error("Recommendation error:", error);
+    res.status(500).json([]);
+  }
+};
+exports.getRecommendations = getRecommendations;
